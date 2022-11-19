@@ -18,8 +18,9 @@
       href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"/>
     <link rel="stylesheet" href="./assets/style.css" />
-    <title>Work Day Scheduler</title>
+    <title>Weather Dashboard</title>
 
     <!-- Link the DayJS library -->
     <script
@@ -38,18 +39,74 @@
   </head>
 
   <body>
-    <header>
-    </header>
-    <div>
-    </div>
+    <nav class="navbar navbar-light bg-primary" id="nav">
+      <a href="index.html"><i class = "fas fa-cloud-sun"></i> Weather Dashboard <i class="fas fa-cloud-sun"></i></a>
+    </nav>
 
-    <div>
-    </div>
 
-    <div>
-    </div>
-
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row" id="row1">
+                    Search for a City:
+                </div>
+                <div class="row">
+                    <form class="form-inline my-2 my-sm-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search for a City!" aria-label="Search" id="searchInput">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit"><i class="fas fa-cloud-sun"></i></button>
+                    </form>
+                <div class="row" id="lastSearch">
+                    <div class="card" style="width: 18rem;" id="buttonsList">
+                        <!-- Buttons of last search goes here -->
+                    </div>
+                </div>
     
+                </div>
+            </div>
+
+            <!-- Weather Card -->
+
+            <div class="col-lg-8" id="allWeather">
+                <div class="row" id="weatherCard">
+                    <div class="card" style="width: 98%;" id="cardDisplay">
+
+                        <div class="row">
+
+                            <div class="col-lg-6">
+                                <div class="card-body" id="card">
+                                  <h2 class="card-title" id="cityResult"></h2>
+                                  <p class="card-text" id="tempResult"></p>
+                                  <p class="card-text" id="humidityResult"></p>
+                                  <p class="card-text" id="windResult"></p>
+                                  <p class="card-tet" id="UVIndexResult"></p>
+                                </div>
+    
+                            </div>
+                            <div class="col-lg-4" id="mainIcon">
+                                <!-- Main Icon -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 Day Forecast -->
+                <div class="row" id="row5day"></div>
+
+                <div class="row" id="rowCards">
+                    <!-- Cards Goes Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+
+    <footer>
+      <div class="col-12">
+          <hr class="light" color="gray">
+          <h5 id="CopyR">&copy; Hanks Meteorology</h5>
+      </div>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
