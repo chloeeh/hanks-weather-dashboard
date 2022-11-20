@@ -30,7 +30,7 @@ var citiesArray = JSON.parse(localStorage.getItem("Saved City")) || [];
 // FUNCTIONS---------------------------------------------------------------
 // TO-DO: put date/time into updateClock function like workday scheduler
 // TO-DO: local storage
-// TO-DO: fetch request for weather
+// TO-DO: fetch request for weather - put in function; conditionals for non-existent city
 // TO-DO: init() function
 
 
