@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- jquery script -->
+    <script src="https://code.jquery.com/jquery-git.js"></script>
+
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -52,9 +55,10 @@
                 </div>
                 <div class="row">
                     <form class="form-inline my-2 my-sm-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search for a City!" aria-label="Search" id="searchInput">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search for a City!" aria-label="Search" id="user-input">
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit"><i class="fas fa-cloud-sun"></i></button>
                     </form>
+              
                 <div class="row" id="lastSearch">
                     <div class="card" style="width: 18rem;" id="buttonsList">
                         <!-- Buttons of last search goes here -->
@@ -62,7 +66,13 @@
                 </div>
     
                 </div>
+
+                  <!-- DYNAMIC DROPDOWN -->
+                  <div id="specify-dropdown">
+                  </div>
+                  
             </div>
+
 
             <!-- Weather Card -->
 
