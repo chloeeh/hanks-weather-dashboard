@@ -13,7 +13,8 @@ var dayForecast = $("#forecast");
 var cardDisplay = $("#cardDisplay");
 var UVIndexText = $("#UVIndexResult");
 var buttonList = $("#buttonsList");
-
+var userInput = $("#user-input")
+var buttonSearch = $("#search-button");
 
 
 // GLOBALS---------------------------------------------------------------
@@ -31,8 +32,8 @@ var weatherApiKey = "a795125c754c25589a8e5535bdc9a574";
 var latitude
 var longitude;
 var limitSearch = 5;
-var userInput = "Houston"
-var geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${userInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
+// var userInput = "Houston"
+
 
 
 // var citiesArray = JSON.parse(localStorage.getItem("Saved City")) || [];
@@ -63,6 +64,7 @@ function multipleCities(myGeoObject, myRepeatCityArray) {
 
     if (myGeoObject.length > 1) {
         loopThroughGeoObject(myGeoObject, myRepeatCityArray);
+
     }
     // operateDropDown(myRepeatCityArray, myGeoObject);
         // CREATE DYNAMIC DROPDOWN
@@ -159,48 +161,8 @@ var getWeatherData = function(retrievedLat, retrievedLon) {
         });
 }
 
-// function operateDropDown(repeatCity, GeoObject) {
-
-//     // CREATE DYNAMIC DROPDOWN
-//     var newDropDown = document.createElement("select");
-//     newDropDown.setAttribute("id", "specific-location");
-//     newDropDown.setAttribute("class", "btn dropdown-trigger");
-//     // newDropDown.setAttribute("onchange", "getOption()");
-//     document.getElementById("specify-dropdown").appendChild(newDropDown);
-
-//     myOptions = repeatCity;
-//     test = $('#specific-location');
-//     test.append($('<option></option>').val("placeholder").html("Specify Location"));
-//     for (var i = 0; i < repeatCity.length; i++) {
-//         test.append($('<option></option>').val(i).html(repeatCity[i]));
-//         console.log("MY SPECFIC LOCATION: " + repeatCity);
-//     }
-//     console.log("My Internal Object: "+GeoObject);
-//     // Create Button
-//     var buttonDropdown = document.createElement("button");
-//     buttonDropdown.setAttribute("id", "btn-dropdown");
-//     buttonDropdown.setAttribute("class", "btn btn-outline-primary");
-//     buttonDropdown.setAttribute("type", "submit");
-//     buttonDropdown.textContent = "Submit";
-//     document.getElementById("specify-dropdown").appendChild(buttonDropdown);
-
-
-//     let dropdownSubmitHandler = function (event) {
-//         event.preventDefault();
-//         userSelection = $('#specific-location').find(":selected").text();
-//         console.log("THIS IS MY OUTPUT: "+ userSelection);
-//         outputForecast(GeoObject, userSelection);
-//     }
-    
-//     // EVENT HANDLER
-//     buttonDropdown.addEventListener('click', dropdownSubmitHandler);
-
-// }
-
-
-
-var getGeoData = function() {
-
+var getGeoData = function(userCityInput) {
+    var geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${userCityInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
     var GeoObject = {};
     return fetch(geoUrl)
         .then(function (response) {
@@ -215,6 +177,21 @@ var getGeoData = function() {
                     console.log("geoData.length is: " + geoData.length);
 
                     var sameNameArray = [];
+
+                    if (geoData.length == 0) {
+                        console.log("NO CITIES");
+                    } else if (geoData.length == 1) {
+                        latitude = Object.values(geoData)[0].lat;
+                        longitude = Object.values(geoData)[0].lon;
+                        console.log("These are the coordinates: " + '\n' + 
+                        "LAT: " + latitude + '\n' + 
+                        "LONG: " + longitude);
+                        getWeatherData(latitude, longitude);
+                    } else {
+                        multipleCities(geoData, sameNameArray);
+                    }
+
+                    
                     // if (geoData.length > 1) {
                     //     for (var i = 0; i < geoData.length; i++) {
 
@@ -226,7 +203,7 @@ var getGeoData = function() {
                     //     }
                     //     console.log("All my Cities: " + sameNameArray);
 
-                    multipleCities(geoData, sameNameArray);
+                    
 
                 });
               } else {
@@ -236,19 +213,27 @@ var getGeoData = function() {
         });
 }
 
-
-
-
-
-
-
-
-
 // TO-DO: init() function
 
 
 // EVENT HANDLERS---------------------------------------------------------------
 // TO-DO: add search button method
+buttonSearch.on("click", function(event) {
+    event.preventDefault();
+    if (userInput.val() === "") {
+        alert("Please type a userInput to know the current weather");
+        } else
+        var trimmedUserInput = userInput.val().trim().toLowerCase();
+
+
+        $('#btn-dropdown').remove();
+        $('#specific-location').remove();
+        
+    
+
+    getGeoData(trimmedUserInput);
+    // Any time this button is pushed, call init so that multiple "submit location" buttons don't pop up.
+});
 
 
 
@@ -261,5 +246,5 @@ var getGeoData = function() {
 
 // RUN CODE---------------------------------------------------------------
 // getWeatherData();
-getGeoData();
+// getGeoData();
 
