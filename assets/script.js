@@ -22,6 +22,7 @@ var forecastIcon = {};
 var forecastTemp = {};
 var forecastHum = {};
 var duplicateCity = [];
+var userSelection;
 
 
 var weatherApiKey = "a795125c754c25589a8e5535bdc9a574";
@@ -32,7 +33,7 @@ var longitude;
 var limitSearch = 5;
 var userInput = "Houston"
 var geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${userInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
-var weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=${weatherApiKey}`;
+
 
 // var citiesArray = JSON.parse(localStorage.getItem("Saved City")) || [];
 
@@ -40,90 +41,99 @@ var weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude
 // TO-DO: put date/time into updateClock function like workday scheduler
 // TO-DO: local storage
 // TO-DO: fetch request for weather - put in function; conditionals for non-existent city
+function loopThroughGeoObject(myGeoObject, myRepeatCityArray) {
+    for (var i = 0; i < myGeoObject.length; i++) {
 
-function createDropDown(duplicateCity) {
-    // CREATE DYNAMIC DROPDOWN
-    var newDropDown = document.createElement("select");
-    newDropDown.setAttribute("id", "specific-location");
-    newDropDown.setAttribute("class", "btn dropdown-trigger");
-    // newDropDown.setAttribute("onchange", "getOption()");
-    document.getElementById("specify-dropdown").appendChild(newDropDown);
-
-
-
-    myOptions = duplicateCity;
-    test = $('#specific-location');
-    test.append($('<option></option>').val("placeholder").html("Specify Location"));
-    for (var i = 0; i < duplicateCity.length; i++) {
-        test.append($('<option></option>').val(i).html(duplicateCity[i]));
-        console.log("MY SPECFIC LOCATION: " + duplicateCity);
+        var city = String(Object.values(myGeoObject)[i].name);
+        var state = String(Object.values(myGeoObject)[i].state);
+        var country = String(Object.values(myGeoObject)[i].country);
+        var cityStateCountry = city + ", " + state + ", " + country;
+        myRepeatCityArray[i] = cityStateCountry;
     }
-
-    var buttonDropdown = document.createElement("button");
-    buttonDropdown.setAttribute("id", "btn-dropdown");
-    buttonDropdown.setAttribute("class", "btn btn-outline-primary");
-    buttonDropdown.setAttribute("type", "submit");
-    buttonDropdown.textContent = "Submit";
-    document.getElementById("specify-dropdown").appendChild(buttonDropdown);
-
-
-let dropdownSubmitHandler = function (event) {
-    event.preventDefault();
-    output = test.value;
-    console.log("THIS IS MY OUTPUT: "+ $('#specific-location').find(":selected").text());
+    console.log("All my Cities: " + myRepeatCityArray);
+    console.log("MY CITY: "+city + "MY STATE: "+state + "MY COUNTRY: "+country);
 }
 
-// EVENT HANDLER
-buttonDropdown.addEventListener('click', dropdownSubmitHandler);
+function multipleCities(myGeoObject, myRepeatCityArray) {
+
+    var userSelection;
+    var myDropDownSelectionArray;
 
 
-}
 
-var getGeoData = function() {
+    if (myGeoObject.length > 1) {
+        loopThroughGeoObject(myGeoObject, myRepeatCityArray);
+    }
+    // operateDropDown(myRepeatCityArray, myGeoObject);
+        // CREATE DYNAMIC DROPDOWN
+        var newDropDown = document.createElement("select");
+        newDropDown.setAttribute("id", "specific-location");
+        newDropDown.setAttribute("class", "btn dropdown-trigger");
+        // newDropDown.setAttribute("onchange", "getOption()");
+        document.getElementById("specify-dropdown").appendChild(newDropDown);
+    
+        myOptions = myRepeatCityArray;
+        test = $('#specific-location');
+        test.append($('<option></option>').val("placeholder").html("Specify Location"));
+        for (var i = 0; i < myRepeatCityArray.length; i++) {
+            test.append($('<option></option>').val(i).html(myRepeatCityArray[i]));
+            console.log("MY SPECFIC LOCATION: " + myRepeatCityArray);
+        }
 
-    var GeoObject = {};
-    return fetch(geoUrl)
-        .then(function (response) {
-            // check that code is viable
-            // store data from API into global object
-            if (response.ok) {
-                console.log(response);
-                myData = response.json();
-                // return myData;
-                myData.then(function (geoData) {
-                    console.log("print full GEO DATA", geoData);
-                    console.log("geoData.length is: " + geoData.length);
+        // Create Button
+        var buttonDropdown = document.createElement("button");
+        buttonDropdown.setAttribute("id", "btn-dropdown");
+        buttonDropdown.setAttribute("class", "btn btn-outline-primary");
+        buttonDropdown.setAttribute("type", "submit");
+        buttonDropdown.textContent = "Submit";
+        document.getElementById("specify-dropdown").appendChild(buttonDropdown);
+    
 
-                    var sameNameArray = [];
-                    if (geoData.length > 1) {
-                        for (var i = 0; i < geoData.length; i++) {
+        let dropdownSubmitHandler = function () {
+            // event.preventDefault();
+            userSelection = $('#specific-location').find(":selected").text();
+            console.log("THIS IS MY OUTPUT: "+ userSelection);
+            // outputForecast(GeoObject, userSelection);
+            myDropDownSelectionArray = userSelection.split(", ");
+            return userSelection;
+        }
 
-                            var city = String(Object.values(geoData)[i].name);
-                            var state = String(Object.values(geoData)[i].state);
-                            var country = String(Object.values(geoData)[i].country);
-                            var cityStateCountry = city + ", " + state + ", " + country;
-                            sameNameArray[i] = cityStateCountry;
-                        }
-                        console.log("All my Cities: " + sameNameArray);
 
-                        createDropDown(sameNameArray);
+        // EVENT HANDLER
+        // buttonDropdown.addEventListener('click', dropdownSubmitHandler);
+        buttonDropdown.addEventListener('click', function(event) {
+            
+            var result = dropdownSubmitHandler();
+            myDropDownSelectionArray = result.split(", ");
+            var myCity = myDropDownSelectionArray[0];
+            var myState = myDropDownSelectionArray[1];
+            var myCountry = myDropDownSelectionArray[2];
+            console.log("THIS IS MY OUTPUTTTTTT: "+ myDropDownSelectionArray);
+            // loopThroughGeoObject(myGeoObject, myRepeatCityArray);
+
+            for (var i = 0; i < myGeoObject.length; i++) {
+                if(myCity === String(Object.values(myGeoObject)[i].name) &&
+                   myState === String(Object.values(myGeoObject)[i].state) &&
+                   myCountry === String(Object.values(myGeoObject)[i].country)) {
                     
-                        
-                    GeoObject = Object.values(geoData)[1];
-                    console.log("print GEO OBJECT", GeoObject);
+                    latitude = Object.values(myGeoObject)[i].lat;
+                    longitude = Object.values(myGeoObject)[i].lon;
+                    console.log("These are the coordinates: " + '\n' + 
+                    "LAT: " + latitude + '\n' + 
+                    "LONG: " + longitude);
+                   }
+            }
+            getWeatherData(latitude, longitude);
 
 
-                    };
-                });
-              } else {
-                alert('Error: ' + response.statusText);
-              }
+
 
         });
+
+  
 }
-
-var getWeatherData = function() {
-
+var getWeatherData = function(retrievedLat, retrievedLon) {
+    var weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${retrievedLat}&lon=${retrievedLon}&appid=${weatherApiKey}`;
     var weatherObject = {};
     fetch(weatherUrl)
         .then(function (response) {
@@ -148,6 +158,87 @@ var getWeatherData = function() {
 
         });
 }
+
+// function operateDropDown(repeatCity, GeoObject) {
+
+//     // CREATE DYNAMIC DROPDOWN
+//     var newDropDown = document.createElement("select");
+//     newDropDown.setAttribute("id", "specific-location");
+//     newDropDown.setAttribute("class", "btn dropdown-trigger");
+//     // newDropDown.setAttribute("onchange", "getOption()");
+//     document.getElementById("specify-dropdown").appendChild(newDropDown);
+
+//     myOptions = repeatCity;
+//     test = $('#specific-location');
+//     test.append($('<option></option>').val("placeholder").html("Specify Location"));
+//     for (var i = 0; i < repeatCity.length; i++) {
+//         test.append($('<option></option>').val(i).html(repeatCity[i]));
+//         console.log("MY SPECFIC LOCATION: " + repeatCity);
+//     }
+//     console.log("My Internal Object: "+GeoObject);
+//     // Create Button
+//     var buttonDropdown = document.createElement("button");
+//     buttonDropdown.setAttribute("id", "btn-dropdown");
+//     buttonDropdown.setAttribute("class", "btn btn-outline-primary");
+//     buttonDropdown.setAttribute("type", "submit");
+//     buttonDropdown.textContent = "Submit";
+//     document.getElementById("specify-dropdown").appendChild(buttonDropdown);
+
+
+//     let dropdownSubmitHandler = function (event) {
+//         event.preventDefault();
+//         userSelection = $('#specific-location').find(":selected").text();
+//         console.log("THIS IS MY OUTPUT: "+ userSelection);
+//         outputForecast(GeoObject, userSelection);
+//     }
+    
+//     // EVENT HANDLER
+//     buttonDropdown.addEventListener('click', dropdownSubmitHandler);
+
+// }
+
+
+
+var getGeoData = function() {
+
+    var GeoObject = {};
+    return fetch(geoUrl)
+        .then(function (response) {
+            // check that code is viable
+            // store data from API into global object
+            if (response.ok) {
+                console.log(response);
+                myData = response.json();
+                // return myData;
+                myData.then(function (geoData) {
+                    console.log("print full GEO DATA", geoData);
+                    console.log("geoData.length is: " + geoData.length);
+
+                    var sameNameArray = [];
+                    // if (geoData.length > 1) {
+                    //     for (var i = 0; i < geoData.length; i++) {
+
+                    //         var city = String(Object.values(geoData)[i].name);
+                    //         var state = String(Object.values(geoData)[i].state);
+                    //         var country = String(Object.values(geoData)[i].country);
+                    //         var cityStateCountry = city + ", " + state + ", " + country;
+                    //         sameNameArray[i] = cityStateCountry;
+                    //     }
+                    //     console.log("All my Cities: " + sameNameArray);
+
+                    multipleCities(geoData, sameNameArray);
+
+                });
+              } else {
+                alert('Error: ' + response.statusText);
+              }
+
+        });
+}
+
+
+
+
 
 
 
