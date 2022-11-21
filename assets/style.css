@@ -20,6 +20,11 @@ a {
     padding-bottom: 20px;
 }
 
+#specific-location {
+    border-color: lightgrey;
+    margin-right: 10px;
+}
+
 #lastSearch {
     padding-left: 35px;
     
@@ -28,6 +33,16 @@ a {
 #weatherCard {
     padding-top: 20px;
     padding-bottom: 20px;
+}
+
+#city-display {
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+
+#date-display {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 #row5day {

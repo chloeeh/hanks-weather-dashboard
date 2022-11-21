@@ -4,6 +4,7 @@
 // var userInput = $("#user-input");
 var mySelection = $('#specific-location');
 var cityResultText = $("#city-display");
+var dateResultText = $('#date-display');
 var tempResultText = $("#temp-display");
 var humidityResult = $("#humidity-display");
 var windResultText = $("#wind-display");
@@ -140,7 +141,13 @@ function currentWeather(myCurrentWeatherObject, myCity) {
     var currentIcon = myCurrentWeatherObject.weather[0].icon;
     var displayCurrentIcon = $("<img>").attr("class", "card-img-top").attr("src", `http://openweathermap.org/img/wn/${currentIcon}@2x.png`);
     mainIcon.append(displayCurrentIcon);
-    cityResultText.text(myCity + " " + "today");
+    var currentDate = dayjs().format('dddd, MMM D, YYYY');
+    cityResultText.text(myCity);
+
+    dateResultText.text(currentDate);
+
+
+
     tempResultText.text("Temperature: " + currentTemp + " ºC");
     humidityResult.text("Humidity: " + currentHumidity + " %");
     windResultText.text("Wind Speed: " + currentWind + " MPH");
@@ -182,6 +189,11 @@ var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
             
                     // GET DATE--------------------------------
                     // forecastDate[i] = response.list[i].dt_txt;
+                    var today = new Date();
+                    var nextDay = new Date(today);
+                    nextDay.setDate(nextDay.getDate()+1)
+
+                    forecastDate[i] = nextDay.setDate(nextDay.getDate()+i);
                     forecastIcon[i] = forecastWeatherData[i].weather[0].icon;
                     forecastTemp[i] = forecastWeatherData[i].temp.day; 
                     forecastHum[i] = forecastWeatherData[i].humidity;  
@@ -258,8 +270,6 @@ var getGeoData = function(userCityInput) {
         });
 }
 
-// TO-DO: init() function
-
 
 // EVENT HANDLERS---------------------------------------------------------------
 // TO-DO: add search button method
@@ -267,29 +277,14 @@ buttonSearch.on("click", function(event) {
     event.preventDefault();
     if (userInput.val() === "") {
         alert("Please type a userInput to know the current weather");
-        } else
-        var trimmedUserInput = userInput.val().trim().toLowerCase();
+        } else {
+            var trimmedUserInput = userInput.val().trim().toLowerCase();
+            $('#btn-dropdown').remove();
+            $('#specific-location').remove();
+            // STORE DATA----------
+            getGeoData(trimmedUserInput);
+        }
 
-
-        $('#btn-dropdown').remove();
-        $('#specific-location').remove();
-        
-    
-
-    getGeoData(trimmedUserInput);
-    // Any time this button is pushed, call init so that multiple "submit location" buttons don't pop up.
 });
 
-
-
-
-
-
-
-
-
-
-// RUN CODE---------------------------------------------------------------
-// getWeatherData();
-// getGeoData();
 
