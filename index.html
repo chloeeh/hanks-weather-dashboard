@@ -42,70 +42,69 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-light bg-primary" id="nav">
+    <header class="navbar navbar-light " id="header">
       <a href="index.html">Weather Dashboard </a>
-    </nav>
+    </header>
 
-
+    <!-- Container for all items -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-4" id="col1">
-                <div class="row" id="row1">
-                    Search for a City:
-                </div>
-                <div class="row" id="row2">
-                    <form class="form-inline my-2 my-sm-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search for a City!" aria-label="Search" id="user-input" required>
-                        <button id="search-button" class="btn btn-outline-primary my-2 my-sm-0" type="submit"><i class="fas fa-cloud-sun"></i></button>
-                    </form>
-              
-                <div class="row" id="lastSearch">
-                    <div class="card" style="width: 18rem;" id="buttonsList">
-                        <!-- Buttons of last search goes here -->
-                    </div>
-                </div>
-    
-                </div>
-
-                  <!-- DYNAMIC DROPDOWN -->
-                  <div id="specify-dropdown">
-                  </div>
-                  
+          <!-- Area for user interaction -->
+          <div class="col-sm-4" id="col1">
+            <div class="row" id="row1">
+                Search for a City:
             </div>
 
+            <!-- User Text Input for City + Submit Button -->
+            <div class="row" id="row2">
+              <form class="form-inline my-2 my-sm-0">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search for a City!" aria-label="Search" id="user-input" required>
+                  <button id="search-button" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+              </form>
 
-            <!-- Weather Card -->
+              <!-- DYNAMIC DROPDOWN -->
+              <!-- Dropdown and dropdown button will reside within this div -->
+              <div id="specify-dropdown">
+              </div>
+              
+              <!-- List of buttons for previous searches + Clear History Button -->
+              <div class="row" id="lastSearch">
+                  <div class="card" style="width: 18rem;" id="buttons-list">
+                      <!-- Buttons of last search goes here -->
+                  </div>
+              </div>
+            </div>
+          </div>
 
-            <div class="col-lg-8" id="allWeather">
-                <div class="row" id="weatherCard">
-                    <div class="card" style="width: 98%;" id="cardDisplay">
 
-                        <div class="row">
+            <!-- All Weather Information-->
+          <div class="col-lg-8" id="allWeather">
+              <div class="row" id="weatherCard">
+                  <div class="card" style="width: 98%;" id="card-display">
+                      <div class="row">
 
-                            <div class="col-lg-6">
-                                <div class="card-body" id="card">
-                                  <h2 class="card-title" id="city-display"></h2>
-                                  <p class="card-text" id="date-display"></p>
-                                  <p class="card-text" id="temp-display"></p>
-                                  <p class="card-text" id="humidity-display"></p>
-                                  <p class="card-text" id="wind-display"></p>
-                                  <p class="card-tet" id="uv-display"></p>
-                                </div>
-    
-                            </div>
-                            <div class="col-lg-4" id="mainIcon">
-                                <!-- Main Icon -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                          <!-- Current Weather Data -->
+                          
+                          <div class="col-lg-6">
+                              <div class="card-body" id="card">
+                                <h2 class="card-title" id="city-display"></h2>
+                                <p class="card-text" id="date-display"></p>
+                                <p class="card-text" id="temp-display"></p>
+                                <p class="card-text" id="wind-display"></p>
+                                <p class="card-text" id="humidity-display"></p>
+                              </div>
+                          </div>
+                          <div class="col-lg-4" id="main-icon"></div>
+                      </div>
+                  </div>
+              </div>
+                <!-- Forecast Weather Data -->
                 <!-- 5 Day Forecast -->
-                <div class="row" id="forecast"></div>
+              <div class="row" id="forecast"></div>
 
-                <div class="row" id="row-forecast">
-                    <!-- Cards Goes Here -->
-                </div>
+              <div class="row" id="row-forecast">
+                  <!-- Forecast Cards Go Here -->
+              </div>
             </div>
         </div>
     </div>
