@@ -31,6 +31,9 @@ var weatherApiKey = "a795125c754c25589a8e5535bdc9a574";
 // add script info into HTML 
 var latitude
 var longitude;
+// default is kelvin; use "metric" for degrees C and meters/sec
+// imperial is in degrees F and miles/hour
+var units = "imperial";
 var limitSearch = 5;
 // var userInput = "Houston"
 
@@ -41,7 +44,6 @@ var limitSearch = 5;
 // FUNCTIONS---------------------------------------------------------------
 // TO-DO: put date/time into updateClock function like workday scheduler
 // TO-DO: local storage
-// TO-DO: fetch request for weather - put in function; conditionals for non-existent city
 function loopThroughGeoObject(myGeoObject, myRepeatCityArray) {
     for (var i = 0; i < myGeoObject.length; i++) {
 
@@ -125,18 +127,28 @@ function multipleCities(myGeoObject, myRepeatCityArray) {
                     "LONG: " + longitude);
                    }
             }
-            getWeatherData(latitude, longitude);
-
-
-
-
+            getWeatherData(latitude, longitude, myCity);
         });
 
   
 }
-var getWeatherData = function(retrievedLat, retrievedLon) {
-    var weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${retrievedLat}&lon=${retrievedLon}&appid=${weatherApiKey}`;
-    var weatherObject = {};
+
+function currentWeather(myCurrentWeatherObject, myCity) {
+    var currentTemp = myCurrentWeatherObject.temp;
+    var currentWind = myCurrentWeatherObject.wind_speed;
+    var currentHumidity = myCurrentWeatherObject.humidity;
+    var currentIcon = myCurrentWeatherObject.weather[0].icon;
+    var displayCurrentIcon = $("<img>").attr("class", "card-img-top").attr("src", `http://openweathermap.org/img/wn/${currentIcon}@2x.png`);
+    mainIcon.append(displayCurrentIcon);
+    cityResultText.text(myCity + " " + "today");
+    tempResultText.text("Temperature: " + currentTemp + " ºC");
+    humidityResult.text("Humidity: " + currentHumidity + " %");
+    windResultText.text("Wind Speed: " + currentWind + " MPH");
+}
+var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
+    var weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${retrievedLat}&lon=${retrievedLon}&units=${units}&appid=${weatherApiKey}`;
+    mainIcon.empty();
+
     fetch(weatherUrl)
         .then(function (response) {
             // check that code is viable
@@ -146,14 +158,62 @@ var getWeatherData = function(retrievedLat, retrievedLon) {
                 myData = response.json();
                 myData.then(function (weatherData) {
                     console.log("print full WEATHER DATA", weatherData);
-                    // stores the object 'rates' from the data response into
-                    // global variable object
-                    weatherObject = weatherData.current;
-                    console.log("print WEATHER OBJECT", weatherObject);
+                    currentWeatherData = weatherData.current;
+                    currentWeather(currentWeatherData, retrievedCity);
 
-                    // var cityName = weatherData.name;
-                    // var country = weatherData.sys.country;
+                    
+                    
+
+    // FORECAST-------------------------------------------
+                var numForecast = 5;
+                forecastWeatherData = [];
+                for (var i = 0; i < numForecast; i++) {
+                    forecastWeatherData[i] = weatherData.daily[i]; 
+                }
+                console.log("print FORECAST", forecastWeatherData);
+                // console.log("print ICON", forecastWeatherData.weather[0].icon);
+                
+                dayForecast.empty();
+                rowForecast.empty();
+                var titleForecast = $("<h2>").attr("class", "forecast").text("5-Day Forecast: "); 
+
+                for (var i = 0; i < forecastWeatherData.length; i++){
+
+            
+                    // GET DATE--------------------------------
+                    // forecastDate[i] = response.list[i].dt_txt;
+                    forecastIcon[i] = forecastWeatherData[i].weather[0].icon;
+                    forecastTemp[i] = forecastWeatherData[i].temp.day; 
+                    forecastHum[i] = forecastWeatherData[i].humidity;  
+        
+                    var newCol2 = $("<div>").attr("class", "col-2");
+                    rowForecast.append(newCol2);
+        
+                    var newDivCard = $("<div>").attr("class", "card text-white bg-primary mb-3");
+                    newDivCard.attr("style", "max-width: 18rem;")
+                    newCol2.append(newDivCard);
+        
+                    var newCardBody = $("<div>").attr("class", "card-body");
+                    newDivCard.append(newCardBody);
+                    // TO-DO---------DATE
+                    var newH5 = $("<h5>").attr("class", "card-title").text(moment(forecastDate[i]).format("MMM Do"));
+                    newCardBody.append(newH5);
+        
+                    var newImg = $("<img>").attr("class", "card-img-top").attr("src", "https://openweathermap.org/img/wn/" + forecastIcon[i] + "@2x.png");
+                    newCardBody.append(newImg);
+        
+                    var newPTemp = $("<p>").attr("class", "card-text").text("Temp: " + Math.floor(forecastTemp[i]) + "ºC");
+                    newCardBody.append(newPTemp);
+        
+                    var newPHum = $("<p>").attr("class", "card-text").text("Humidity: " + forecastHum[i] + " %");
+                    newCardBody.append(newPHum);
+        
+                    dayForecast.append(titleForecast);
+                    };
+                
                 });
+                
+                cardDisplay.attr("style", "display: flex; width: 98%");
               } else {
                 alert('Error: ' + response.statusText);
               }
@@ -190,21 +250,6 @@ var getGeoData = function(userCityInput) {
                     } else {
                         multipleCities(geoData, sameNameArray);
                     }
-
-                    
-                    // if (geoData.length > 1) {
-                    //     for (var i = 0; i < geoData.length; i++) {
-
-                    //         var city = String(Object.values(geoData)[i].name);
-                    //         var state = String(Object.values(geoData)[i].state);
-                    //         var country = String(Object.values(geoData)[i].country);
-                    //         var cityStateCountry = city + ", " + state + ", " + country;
-                    //         sameNameArray[i] = cityStateCountry;
-                    //     }
-                    //     console.log("All my Cities: " + sameNameArray);
-
-                    
-
                 });
               } else {
                 alert('Error: ' + response.statusText);
