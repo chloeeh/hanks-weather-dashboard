@@ -159,7 +159,7 @@ function currentWeather(myWeatherObject, myCity) {
     // create html element to display the weather icon to graphically report
     // current weather
     // append this element to the mainIcon element
-    var displayCurrentIcon = $("<img>").attr("class", "card-img-top").attr("src", `http://openweathermap.org/img/wn/${currentIcon}@2x.png`);
+    var displayCurrentIcon = $("<img>").attr("class", "card-img-top").attr("src", `https://openweathermap.org/img/wn/${currentIcon}@2x.png`);
     mainIcon.append(displayCurrentIcon);
 
     // Display text results to the user
@@ -267,7 +267,7 @@ var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
 // longitude using API + key userCityInput will kick off the search through 
 // this function, requiring further user input to narrow down a location
 var getGeoData = function(userCityInput) {
-    var geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${userCityInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
+    var geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${userCityInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
     return fetch(geoUrl)
         .then(function (response) {
             // check that code is viable
