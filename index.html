@@ -43,17 +43,17 @@
 
   <body>
     <nav class="navbar navbar-light bg-primary" id="nav">
-      <a href="index.html"><i class = "fas fa-cloud-sun"></i> Weather Dashboard <i class="fas fa-cloud-sun"></i></a>
+      <a href="index.html">Weather Dashboard </a>
     </nav>
 
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-4" id="col1">
                 <div class="row" id="row1">
                     Search for a City:
                 </div>
-                <div class="row">
+                <div class="row" id="row2">
                     <form class="form-inline my-2 my-sm-0">
                         <input class="form-control mr-sm-2" type="search" placeholder="Search for a City!" aria-label="Search" id="user-input" required>
                         <button id="search-button" class="btn btn-outline-primary my-2 my-sm-0" type="submit"><i class="fas fa-cloud-sun"></i></button>
@@ -94,6 +94,7 @@
                             </div>
                             <div class="col-lg-4" id="mainIcon">
                                 <!-- Main Icon -->
+                                <h1 class="card-img-top" attr>Please Show Up</h1>
                             </div>
                         </div>
                     </div>
