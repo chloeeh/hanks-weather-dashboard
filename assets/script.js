@@ -24,6 +24,7 @@ var forecastIcon = {};
 var forecastTemp = {};
 var forecastHum = {};
 var duplicateCity = [];
+var citiesArray = JSON.parse(localStorage.getItem("savedSearch")) || [];
 var userSelection;
 
 
@@ -40,11 +41,18 @@ var limitSearch = 5;
 
 
 
-// var citiesArray = JSON.parse(localStorage.getItem("Saved City")) || [];
-
 // FUNCTIONS---------------------------------------------------------------
-// TO-DO: put date/time into updateClock function like workday scheduler
-// TO-DO: local storage
+
+function init() {
+    $(document).ready(function (){
+        // var userInput = citiesArray[citiesArray.length - 1];
+        displayPreviousSearch();
+    });
+}
+
+
+
+
 function loopThroughGeoObject(myGeoObject, myRepeatCityArray) {
     for (var i = 0; i < myGeoObject.length; i++) {
 
@@ -130,11 +138,10 @@ function multipleCities(myGeoObject, myRepeatCityArray) {
             }
             getWeatherData(latitude, longitude, myCity);
         });
-
-  
 }
 
-function currentWeather(myCurrentWeatherObject, myCity) {
+function currentWeather(myWeatherObject, myCity) {
+    var myCurrentWeatherObject = myWeatherObject.current;
     var currentTemp = myCurrentWeatherObject.temp;
     var currentWind = myCurrentWeatherObject.wind_speed;
     var currentHumidity = myCurrentWeatherObject.humidity;
@@ -145,13 +152,61 @@ function currentWeather(myCurrentWeatherObject, myCity) {
     cityResultText.text(myCity);
 
     dateResultText.text(currentDate);
-
-
-
     tempResultText.text("Temperature: " + currentTemp + " ºC");
     humidityResult.text("Humidity: " + currentHumidity + " %");
     windResultText.text("Wind Speed: " + currentWind + " MPH");
 }
+
+function forecastWeather(myWeatherObject) {
+    var numForecast = 5;
+    forecastWeatherData = [];
+    for (var i = 0; i < numForecast; i++) {
+        forecastWeatherData[i] = myWeatherObject.daily[i]; 
+    }
+    console.log("print FORECAST", forecastWeatherData);
+    // console.log("print ICON", forecastWeatherData.weather[0].icon);
+    
+    dayForecast.empty();
+    rowForecast.empty();
+    var titleForecast = $("<h2>").attr("class", "forecast").text("5-Day Forecast: "); 
+
+    for (var i = 0; i < forecastWeatherData.length; i++){
+        var today = new Date();
+        var nextDay = new Date(today);
+        nextDay.setDate(nextDay.getDate()+1)
+
+        forecastDate[i] = nextDay.setDate(nextDay.getDate()+i);
+        forecastIcon[i] = forecastWeatherData[i].weather[0].icon;
+        forecastTemp[i] = forecastWeatherData[i].temp.day; 
+        forecastHum[i] = forecastWeatherData[i].humidity;  
+
+        var newCol2 = $("<div>").attr("class", "col-2");
+        rowForecast.append(newCol2);
+
+        var newDivCard = $("<div>").attr("class", "card text-white bg-primary mb-3");
+        newDivCard.attr("style", "max-width: 18rem;")
+        newCol2.append(newDivCard);
+
+        var newCardBody = $("<div>").attr("class", "card-body");
+        newDivCard.append(newCardBody);
+
+        var newH5 = $("<h5>").attr("class", "card-title").text(moment(forecastDate[i]).format("MMM Do"));
+        newCardBody.append(newH5);
+
+        var newImg = $("<img>").attr("class", "card-img-top").attr("src", "https://openweathermap.org/img/wn/" + forecastIcon[i] + "@2x.png");
+        newCardBody.append(newImg);
+
+        var newPTemp = $("<p>").attr("class", "card-text").text("Temp: " + Math.floor(forecastTemp[i]) + "ºC");
+        newCardBody.append(newPTemp);
+
+        var newPHum = $("<p>").attr("class", "card-text").text("Humidity: " + forecastHum[i] + " %");
+        newCardBody.append(newPHum);
+
+        dayForecast.append(titleForecast);
+        };
+
+}
+
 var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
     var weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${retrievedLat}&lon=${retrievedLon}&units=${units}&appid=${weatherApiKey}`;
     mainIcon.empty();
@@ -165,66 +220,10 @@ var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
                 myData = response.json();
                 myData.then(function (weatherData) {
                     console.log("print full WEATHER DATA", weatherData);
-                    currentWeatherData = weatherData.current;
-                    currentWeather(currentWeatherData, retrievedCity);
-
                     
-                    
-
-    // FORECAST-------------------------------------------
-                var numForecast = 5;
-                forecastWeatherData = [];
-                for (var i = 0; i < numForecast; i++) {
-                    forecastWeatherData[i] = weatherData.daily[i]; 
-                }
-                console.log("print FORECAST", forecastWeatherData);
-                // console.log("print ICON", forecastWeatherData.weather[0].icon);
-                
-                dayForecast.empty();
-                rowForecast.empty();
-                var titleForecast = $("<h2>").attr("class", "forecast").text("5-Day Forecast: "); 
-
-                for (var i = 0; i < forecastWeatherData.length; i++){
-
-            
-                    // GET DATE--------------------------------
-                    // forecastDate[i] = response.list[i].dt_txt;
-                    var today = new Date();
-                    var nextDay = new Date(today);
-                    nextDay.setDate(nextDay.getDate()+1)
-
-                    forecastDate[i] = nextDay.setDate(nextDay.getDate()+i);
-                    forecastIcon[i] = forecastWeatherData[i].weather[0].icon;
-                    forecastTemp[i] = forecastWeatherData[i].temp.day; 
-                    forecastHum[i] = forecastWeatherData[i].humidity;  
-        
-                    var newCol2 = $("<div>").attr("class", "col-2");
-                    rowForecast.append(newCol2);
-        
-                    var newDivCard = $("<div>").attr("class", "card text-white bg-primary mb-3");
-                    newDivCard.attr("style", "max-width: 18rem;")
-                    newCol2.append(newDivCard);
-        
-                    var newCardBody = $("<div>").attr("class", "card-body");
-                    newDivCard.append(newCardBody);
-                    // TO-DO---------DATE
-                    var newH5 = $("<h5>").attr("class", "card-title").text(moment(forecastDate[i]).format("MMM Do"));
-                    newCardBody.append(newH5);
-        
-                    var newImg = $("<img>").attr("class", "card-img-top").attr("src", "https://openweathermap.org/img/wn/" + forecastIcon[i] + "@2x.png");
-                    newCardBody.append(newImg);
-        
-                    var newPTemp = $("<p>").attr("class", "card-text").text("Temp: " + Math.floor(forecastTemp[i]) + "ºC");
-                    newCardBody.append(newPTemp);
-        
-                    var newPHum = $("<p>").attr("class", "card-text").text("Humidity: " + forecastHum[i] + " %");
-                    newCardBody.append(newPHum);
-        
-                    dayForecast.append(titleForecast);
-                    };
-                
+                    currentWeather(weatherData, retrievedCity);
+                    forecastWeather(weatherData);
                 });
-                
                 cardDisplay.attr("style", "display: flex; width: 98%");
               } else {
                 alert('Error: ' + response.statusText);
@@ -235,7 +234,6 @@ var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
 
 var getGeoData = function(userCityInput) {
     var geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${userCityInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
-    var GeoObject = {};
     return fetch(geoUrl)
         .then(function (response) {
             // check that code is viable
@@ -270,6 +268,46 @@ var getGeoData = function(userCityInput) {
         });
 }
 
+function storeCitySearch() {
+    userSearch = userInput.val().trim().toLowerCase();
+    var containsCity = false;
+
+    if (citiesArray != null) {
+        $(citiesArray).each(function(oldSearch) {
+            if (citiesArray[oldSearch] === userSearch) {
+                containsCity = true;
+            }
+        });
+    }
+
+    if (containsCity === false) {
+        citiesArray.push(userSearch);
+    }
+
+    localStorage.setItem("savedSearch", JSON.stringify(citiesArray));
+}
+
+function displayPreviousSearch() {
+    buttonList.empty();
+    for (var i = 0; i < citiesArray.length; i ++) {
+        var newButton = $("<button>").attr("type", "button").attr("class","savedBtn btn btn-secondary btn-lg btn-block");
+        newButton.attr("data-name", citiesArray[i])
+        newButton.text(citiesArray[i]);
+        buttonList.prepend(newButton);
+    }
+    $(".savedBtn").on("click", function(event){
+        event.preventDefault();
+        oldInput = $(this).data("name");
+        console.log("THIS IS OLD: "+ oldInput);
+        $('#btn-dropdown').remove();
+        $('#specific-location').remove();
+        getGeoData(oldInput);
+    })
+}
+
+
+// RUN CODE---------------------------------------------------------------------
+init();
 
 // EVENT HANDLERS---------------------------------------------------------------
 // TO-DO: add search button method
@@ -282,8 +320,11 @@ buttonSearch.on("click", function(event) {
             $('#btn-dropdown').remove();
             $('#specific-location').remove();
             // STORE DATA----------
+            storeCitySearch();
+            displayPreviousSearch();
             getGeoData(trimmedUserInput);
         }
+
 
 });
 
