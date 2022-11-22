@@ -294,7 +294,7 @@ var getGeoData = function(userCityInput) {
                         console.log("These are the coordinates: " + '\n' + 
                         "LAT: " + latitude + '\n' + 
                         "LONG: " + longitude);
-                        getWeatherData(latitude, longitude);
+                        getWeatherData(latitude, longitude, userCityInput);
                     // if the user enters a city with >1 result, develop dropdown
                     // require user selection, follow the rest of multipleCities(object, array)
                     } else {
