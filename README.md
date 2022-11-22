@@ -13,6 +13,7 @@ When the user enters a valid text input (cannot be blank), one of three events o
 ![Image of Dashboard with previous searches](./assets/images/show-storage.png)
 ![Image of Dashboard with dropdown selection](./assets/images/dropdown-menu.png)
 ![Image of Dashboard with weather display](./assets/images/weather-display.png)
+![Image of Dashboard with modal alert](./assets/images/modal-alert.png)
 
 
 
