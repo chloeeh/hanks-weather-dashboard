@@ -15,6 +15,8 @@ var cardDisplay = $("#card-display");
 var buttonList = $("#buttons-list");
 var userInput = $("#user-input")
 var buttonSearch = $("#search-button");
+var allWeather = document.getElementById("allWeather");
+
 
 
 // GLOBALS---------------------------------------------------------------
@@ -228,8 +230,8 @@ function forecastWeather(myWeatherObject) {
         newCardBody.append(showForecastWind);
 
         var showForecastHumidity = $("<p>").attr("class", "card-text").text("Humidity: " + forecastHumidity[i] + " %");
-
         newCardBody.append(showForecastHumidity);
+
         dayForecast.append(titleForecast);
     };
 }
@@ -281,10 +283,10 @@ var getGeoData = function(userCityInput) {
                     console.log("geoData.length is: " + geoData.length);
 
                     var sameNameArray = [];
-                    // if the user enters a non-existent city, do not display
-                    // any information
+                    // if the user enters a non-existent city, display alert modal
                     if (geoData.length == 0) {
                         console.log("NO CITIES");
+                        modal.style.display = "block";
                     // if the user enters a unique-named city (only one result)
                     // do not create dropdown; immediately show weather results
                     } else if (geoData.length == 1) {
@@ -361,15 +363,32 @@ function displayPreviousSearch() {
     $(".clear-btn").on("click", function(event){
         event.preventDefault();
         localStorage.clear();
+        allWeather.style.display = "none";
         $('#btn-dropdown').remove();
         $('#specific-location').remove();
         buttonList.empty();
     })
 }
 
+/* ---------------------- MODALS ----------------------- */
+// When the user enters an invalid city name, build an alert
+// Get the modal
+var modal = document.getElementById("myModal");
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
 
-// --------------------------------RUN PROGRAM-------------------------------------
-init();
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
 
 // -------------------------------EVENT HANDLERS--------------------------------
 // When user clicks on search button, 
@@ -381,7 +400,8 @@ init();
 buttonSearch.on("click", function(event) {
     event.preventDefault();
     if (userInput.val() === "") {
-        alert("Please type a userInput to know the current weather");
+        // If user inputs nothing, or only spaces, display alert modal
+        modal.style.display = "block";
         } else {
             var trimmedUserInput = userInput.val().trim().toLowerCase();
             $('#btn-dropdown').remove();
@@ -392,5 +412,8 @@ buttonSearch.on("click", function(event) {
             getGeoData(trimmedUserInput);
         }
 });
+
+// --------------------------------RUN PROGRAM-------------------------------------
+init();
 
 

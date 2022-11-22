@@ -85,7 +85,7 @@
 
                           <!-- Current Weather Data -->
                           
-                          <div class="col-lg-6">
+                          <div class="col-lg-6 current-weather">
                               <div class="card-body" id="card">
                                 <h2 class="card-title" id="city-display"></h2>
                                 <p class="card-text" id="date-display"></p>
@@ -107,6 +107,22 @@
               </div>
             </div>
         </div>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close">&times;</span>
+              <h2>! ALERT !</h2>
+            </div>
+            <div class="modal-body">
+              <h3>Please enter a valid city 
+              </h3>
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -118,8 +134,9 @@
       </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script type="text/javascript" src="./assets/script.js"></script>
-  </body>
 </html>
