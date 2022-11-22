@@ -15,8 +15,6 @@ var cardDisplay = $("#card-display");
 var buttonList = $("#buttons-list");
 var userInput = $("#user-input")
 var buttonSearch = $("#search-button");
-var allWeather = document.getElementById("allWeather");
-
 
 
 // GLOBALS---------------------------------------------------------------
@@ -161,7 +159,7 @@ function currentWeather(myWeatherObject, myCity) {
     // create html element to display the weather icon to graphically report
     // current weather
     // append this element to the mainIcon element
-    var displayCurrentIcon = $("<img>").attr("class", "card-img-top").attr("src", `https://openweathermap.org/img/wn/${currentIcon}@2x.png`);
+    var displayCurrentIcon = $("<img>").attr("class", "card-img-top").attr("src", `http://openweathermap.org/img/wn/${currentIcon}@2x.png`);
     mainIcon.append(displayCurrentIcon);
 
     // Display text results to the user
@@ -230,8 +228,8 @@ function forecastWeather(myWeatherObject) {
         newCardBody.append(showForecastWind);
 
         var showForecastHumidity = $("<p>").attr("class", "card-text").text("Humidity: " + forecastHumidity[i] + " %");
-        newCardBody.append(showForecastHumidity);
 
+        newCardBody.append(showForecastHumidity);
         dayForecast.append(titleForecast);
     };
 }
@@ -269,7 +267,7 @@ var getWeatherData = function(retrievedLat, retrievedLon, retrievedCity) {
 // longitude using API + key userCityInput will kick off the search through 
 // this function, requiring further user input to narrow down a location
 var getGeoData = function(userCityInput) {
-    var geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${userCityInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
+    var geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${userCityInput}&limit=${limitSearch}&appid=${weatherApiKey}`;
     return fetch(geoUrl)
         .then(function (response) {
             // check that code is viable
@@ -283,7 +281,8 @@ var getGeoData = function(userCityInput) {
                     console.log("geoData.length is: " + geoData.length);
 
                     var sameNameArray = [];
-                    // if the user enters a non-existent city, display alert modal
+                    // if the user enters a non-existent city, do not display
+                    // any information
                     if (geoData.length == 0) {
                         console.log("NO CITIES");
                         modal.style.display = "block";
@@ -295,7 +294,7 @@ var getGeoData = function(userCityInput) {
                         console.log("These are the coordinates: " + '\n' + 
                         "LAT: " + latitude + '\n' + 
                         "LONG: " + longitude);
-                        getWeatherData(latitude, longitude, userCityInput);
+                        getWeatherData(latitude, longitude);
                     // if the user enters a city with >1 result, develop dropdown
                     // require user selection, follow the rest of multipleCities(object, array)
                     } else {
@@ -364,7 +363,6 @@ function displayPreviousSearch() {
         event.preventDefault();
         citiesArray = [];
         localStorage.clear();
-        allWeather.style.display = "none";
         $('#btn-dropdown').remove();
         $('#specific-location').remove();
         buttonList.empty();
@@ -401,7 +399,7 @@ window.onclick = function(event) {
 buttonSearch.on("click", function(event) {
     event.preventDefault();
     if (userInput.val() === "") {
-        // If user inputs nothing, or only spaces, display alert modal
+        // alert user to enter valid city
         modal.style.display = "block";
         } else {
             var trimmedUserInput = userInput.val().trim().toLowerCase();
@@ -416,4 +414,3 @@ buttonSearch.on("click", function(event) {
 
 // --------------------------------RUN PROGRAM-------------------------------------
 init();
-
